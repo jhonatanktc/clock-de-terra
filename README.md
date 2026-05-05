@@ -1,5 +1,7 @@
 # clock de terra
 
+[clock de terra](https://jhonatanktc.github.io/clock-de-terra/clock-de-terra.html)
+
 Traditional clocks have "illogical" designs, such as the hour hand rotating twice a day, causing visual confusion between AM and PM. clock-de-terra breaks this habit by returning to a more intuitive, global perspective.
 
 1. True 24-Hour Cycle
