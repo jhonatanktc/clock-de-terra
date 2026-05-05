@@ -8,6 +8,7 @@ Traditional clocks have "illogical" designs, such as the hour hand rotating twic
     - Top: 12:00
     - Left: 18:00
 2. Global Synchronicity
+
     There are no minute or second hands. Instead, the clock features 24 hour hands, each representing one of the 24 time zones. This allows you to see the current rhythm of the entire planet at a single glance.
 
 Designed by Jhonatan Kelvin.
