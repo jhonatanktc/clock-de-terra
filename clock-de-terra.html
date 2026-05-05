@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="color-scheme" content="dark"/>
+    <title>clock de terra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"/>
+    <style>
+      html {
+        background: rgb(31 31 31);
+        overflow: hidden auto;
+        height: 100%;
+      }
+      body {
+        color: rgb(255 255 255);
+        font: 14px/1.5 "Noto Sans", sans-serif;
+        min-height: 100%;
+        margin: 0;
+      }
+      ::selection {
+        background: hsl(180 100% 25% / 0.5);
+      }
+
+      #clock-de-terra {
+        position: relative;
+        top: 5px;
+        left: 5px;
+        width: 360px;
+        height: 360px;
+      }
+      #face-and-numbers {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: 1;
+        width: 360px;
+        height: 360px;
+      }
+      #hands {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: 2;
+        width: 360px;
+        height: 360px;
+      }
+      #digital-clock {
+        white-space: pre-wrap;
+        margin-left: 30px;
+      }
+
+      @media (768px <= width) {
+        body {
+          font-size: 16px;
+        }
+        #clock-de-terra {
+          top: 10px;
+          left: 10px;
+          width: 500px;
+          height: 500px;
+        }
+        #face-and-numbers {
+          width: 500px;
+          height: 500px;
+        }
+        #hands {
+          width: 500px;
+          height: 500px;
+        }
+        #digital-clock {
+          margin-left: 50px;
+        }
+      }
+    </style>
+    <script type="module">
+      const clockDeTerraElm = document.body.querySelector('#clock-de-terra');
+      const faceAndNumbersElm = clockDeTerraElm.querySelector('#face-and-numbers');
+      const handsElm = clockDeTerraElm.querySelector('#hands');
+      const digitalClockElm = document.body.querySelector('#digital-clock');
+
+      await document.fonts.load('16px "Noto Sans"', '+-±0123456789');
+
+      const faceAndNumbersCtx = faceAndNumbersElm.getContext('2d');
+      faceAndNumbersCtx.strokeStyle = 'rgb(255 255 255)';
+      faceAndNumbersCtx.fillStyle = 'rgb(255 255 255)';
+      faceAndNumbersCtx.lineWidth = 7;
+      faceAndNumbersCtx.textBaseline = 'middle';
+      faceAndNumbersCtx.textAlign = 'center';
+
+      faceAndNumbersCtx.beginPath();
+      faceAndNumbersCtx.arc(500, 500, 330, 0, Math.PI * 2);
+      faceAndNumbersCtx.stroke();
+      faceAndNumbersCtx.beginPath();
+      faceAndNumbersCtx.arc(500, 500, 270, 0, Math.PI * 2);
+      faceAndNumbersCtx.stroke();
+
+      let number;
+      for (number = 0; number <= 23; number += 1) {
+        faceAndNumbersCtx.beginPath();
+        faceAndNumbersCtx.arc(
+          500 + 330 * Math.cos(number / 24 * 2 * Math.PI - Math.PI / 2),
+          500 + 330 * -Math.sin(number / 24 * 2 * Math.PI - Math.PI / 2),
+          7,
+          0,
+          Math.PI * 2
+        );
+        faceAndNumbersCtx.stroke();
+
+        faceAndNumbersCtx.font = number % 6 === 0 ? '70px "Noto Sans"' : '42px "Noto Sans"';
+        faceAndNumbersCtx.fillText(
+          number.toString().padStart(2, '0'),
+          500 + 400 * Math.cos(number / 24 * 2 * Math.PI - Math.PI / 2),
+          505 + 400 * -Math.sin(number / 24 * 2 * Math.PI - Math.PI / 2)
+        );
+      }
+
+      const handsCtx = handsElm.getContext('2d');
+      handsCtx.strokeStyle = 'rgb(255 255 255)';
+      handsCtx.fillStyle = 'rgb(255 255 255)';
+      handsCtx.lineWidth = 7;
+      handsCtx.lineCap = 'round';
+      handsCtx.textBaseline = 'middle';
+      handsCtx.textAlign = 'center';
+      handsCtx.font = '28px "Noto Sans"';
+
+      const update = function update() {
+        handsCtx.clearRect(0, 0, handsElm.width, handsElm.height);
+
+        const utcZonedNow = Temporal.Now.zonedDateTimeISO('UTC');
+        const localZonedNow = Temporal.Now.zonedDateTimeISO();
+
+        let timezone;
+        for (timezone = -11; timezone <= 12; timezone += 1) {
+          handsCtx.strokeStyle = 'rgb(255 255 255 / 0.35)';
+          handsCtx.beginPath();
+          handsCtx.moveTo(500, 500);
+          handsCtx.lineTo(
+            500 + 300 * Math.cos((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) / 24 * 2 * Math.PI - Math.PI / 2),
+            500 + 300 * -Math.sin((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) / 24 * 2 * Math.PI - Math.PI / 2)
+          );
+          handsCtx.stroke();
+
+          handsCtx.strokeStyle = 'rgb(255 255 255 / 0.7)';
+          handsCtx.beginPath();
+          handsCtx.moveTo(500, 500);
+          handsCtx.lineTo(
+            500 + 270 * Math.cos((timezone + utcZonedNow.hour + utcZonedNow.minute / 60 + 0.5) / 24 * 2 * Math.PI - Math.PI / 2),
+            500 + 270 * -Math.sin((timezone + utcZonedNow.hour + utcZonedNow.minute / 60 + 0.5) / 24 * 2 * Math.PI - Math.PI / 2)
+          );
+          handsCtx.stroke();
+
+          handsCtx.fillText(
+            `${timezone !== 0 ? (timezone !== 12 ? (timezone > 0 ? '+' : '-') : '±') : ''}${Math.abs(timezone).toString().padStart(2, '0')}`,
+            500 + 240 * Math.cos((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) / 24 * 2 * Math.PI - Math.PI / 2),
+            500 + 240 * -Math.sin((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) / 24 * 2 * Math.PI - Math.PI / 2)
+          );
+        }
+        digitalClockElm.textContent = `${utcZonedNow.toString({smallestUnit: 'minute'})} 週 ${utcZonedNow.dayOfWeek}\n${localZonedNow.toString({smallestUnit: 'minute'})} 週 ${localZonedNow.dayOfWeek}`;
+      };
+
+      update();
+      setInterval(update, 60000);
+    </script>
+  </head>
+  <body>
+    <div id="clock-de-terra">
+      <canvas id="face-and-numbers" width="1000" height="1000"></canvas>
+      <canvas id="hands" width="1000" height="1000"></canvas>
+    </div>
+    <div id="digital-clock"></div>
+  </body>
+</html>
