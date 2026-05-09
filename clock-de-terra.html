@@ -153,7 +153,7 @@
           handsCtx.stroke();
 
           handsCtx.fillText(
-            `${timezone !== 0 ? (timezone !== 12 ? (timezone > 0 ? '+' : '-') : '±') : ''}${Math.abs(timezone).toString().padStart(2, '0')}`,
+            `${timezone === 12 ? '±' : (timezone >= 0 ? '+' : '-')}${Math.abs(timezone).toString().padStart(2, '0')}`,
             500 + 240 * Math.cos((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) / 24 * 2 * Math.PI - Math.PI / 2),
             500 + 240 * -Math.sin((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) / 24 * 2 * Math.PI - Math.PI / 2)
           );
