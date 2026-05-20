@@ -76,6 +76,10 @@
       }
     </style>
     <script type="module">
+      const turn = 2 * Math.PI;
+      const twentyFourthTurn = Math.PI / 12;
+      const fourthTurn = Math.PI / 2;
+
       const clockDeTerraElm = document.body.querySelector('#clock-de-terra');
       const faceAndNumbersElm = clockDeTerraElm.querySelector('#face-and-numbers');
       const handsElm = clockDeTerraElm.querySelector('#hands');
@@ -91,29 +95,29 @@
       faceAndNumbersCtx.textAlign = 'center';
 
       faceAndNumbersCtx.beginPath();
-      faceAndNumbersCtx.arc(500, 500, 330, 0, Math.PI * 2);
+      faceAndNumbersCtx.arc(500, 500, 330, 0, turn);
       faceAndNumbersCtx.stroke();
       faceAndNumbersCtx.beginPath();
-      faceAndNumbersCtx.arc(500, 500, 270, 0, Math.PI * 2);
+      faceAndNumbersCtx.arc(500, 500, 270, 0, turn);
       faceAndNumbersCtx.stroke();
 
       let number;
       for (number = 0; number <= 23; number += 1) {
         faceAndNumbersCtx.beginPath();
         faceAndNumbersCtx.arc(
-          500 + 330 * Math.cos(number / 24 * 2 * Math.PI - Math.PI / 2),
-          500 + 330 * -Math.sin(number / 24 * 2 * Math.PI - Math.PI / 2),
+          500 + 330 * Math.cos(number * twentyFourthTurn),
+          500 + 330 * -Math.sin(number * twentyFourthTurn),
           7,
           0,
-          Math.PI * 2
+          turn
         );
         faceAndNumbersCtx.stroke();
 
         faceAndNumbersCtx.font = number % 6 === 0 ? '70px "Noto Sans"' : '42px "Noto Sans"';
         faceAndNumbersCtx.fillText(
           number.toString().padStart(2, '0'),
-          500 + 400 * Math.cos(number / 24 * 2 * Math.PI - Math.PI / 2),
-          505 + 400 * -Math.sin(number / 24 * 2 * Math.PI - Math.PI / 2)
+          500 + 400 * Math.cos(number * twentyFourthTurn - fourthTurn),
+          505 + 400 * -Math.sin(number * twentyFourthTurn - fourthTurn)
         );
       }
 
@@ -138,8 +142,8 @@
           handsCtx.beginPath();
           handsCtx.moveTo(500, 500);
           handsCtx.lineTo(
-            500 + 300 * Math.cos((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) / 24 * 2 * Math.PI - Math.PI / 2),
-            500 + 300 * -Math.sin((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) / 24 * 2 * Math.PI - Math.PI / 2)
+            500 + 300 * Math.cos((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) * twentyFourthTurn),
+            500 + 300 * -Math.sin((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) * twentyFourthTurn)
           );
           handsCtx.stroke();
 
@@ -147,18 +151,19 @@
           handsCtx.beginPath();
           handsCtx.moveTo(500, 500);
           handsCtx.lineTo(
-            500 + 270 * Math.cos((timezone + utcZonedNow.hour + utcZonedNow.minute / 60 + 0.5) / 24 * 2 * Math.PI - Math.PI / 2),
-            500 + 270 * -Math.sin((timezone + utcZonedNow.hour + utcZonedNow.minute / 60 + 0.5) / 24 * 2 * Math.PI - Math.PI / 2)
+            500 + 270 * Math.cos((timezone + utcZonedNow.hour + utcZonedNow.minute / 60 + 0.5) * twentyFourthTurn),
+            500 + 270 * -Math.sin((timezone + utcZonedNow.hour + utcZonedNow.minute / 60 + 0.5) * twentyFourthTurn)
           );
           handsCtx.stroke();
 
           handsCtx.fillText(
             `${timezone === 12 ? '±' : (timezone >= 0 ? '+' : '-')}${Math.abs(timezone).toString().padStart(2, '0')}`,
-            500 + 240 * Math.cos((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) / 24 * 2 * Math.PI - Math.PI / 2),
-            500 + 240 * -Math.sin((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) / 24 * 2 * Math.PI - Math.PI / 2)
+            500 + 240 * Math.cos((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) * twentyFourthTurn - fourthTurn),
+            500 + 240 * -Math.sin((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) * twentyFourthTurn - fourthTurn)
           );
         }
-        digitalClockElm.textContent = `${utcZonedNow.toString({smallestUnit: 'minute'})} 週 ${utcZonedNow.dayOfWeek}\n${localZonedNow.toString({smallestUnit: 'minute'})} 週 ${localZonedNow.dayOfWeek}`;
+        digitalClockElm.textContent = `${utcZonedNow.toString({smallestUnit: 'minute'})} 週 ${utcZonedNow.dayOfWeek}\n`;
+        digitalClockElm.textContent += `${localZonedNow.toString({smallestUnit: 'minute'})} 週 ${localZonedNow.dayOfWeek}`;
       };
 
       update();
