@@ -4,30 +4,37 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="color-scheme" content="dark"/>
+    <meta name="description" content="傳統指針時鐘的上午和下午在視覺上完全相同，唯一的時針只能表示一個時區。若從北極上空俯瞰地球，地球是逆時針自轉，所以傳統指針時鐘的轉動方向也不對。所以 clock de terra 就是一個更合理的指針時鐘：一天只逆時針轉動一圈，且使用24個時針顯示所有時區的時間，而年、月、日、分和週改用數位時鐘顯示。"/>
     <title>clock de terra</title>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"/>
     <style>
       html {
-        background: rgb(31 31 31);
         overflow: hidden auto;
         height: 100%;
       }
       body {
+        display: grid;
         color: rgb(255 255 255);
-        font: 14px/1.5 "Noto Sans", sans-serif;
+        font: 12px/1.5 "Noto Sans", sans-serif;
         min-height: 100%;
         margin: 0;
+        grid-template:
+          "clock" 360px
+          "digital" 50px
+          "license" 30px
+          / 1fr;
+        place-items: center;
+        gap: 10px;
       }
       ::selection {
         background: hsl(180 100% 25% / 0.5);
       }
 
       #clock-de-terra {
+        grid-area: clock;
         position: relative;
-        top: 5px;
-        left: 5px;
         width: 360px;
         height: 360px;
       }
@@ -48,17 +55,23 @@
         height: 360px;
       }
       #digital-clock {
+        grid-area: digital;
         white-space: pre-wrap;
-        margin-left: 30px;
+      }
+      #license-info {
+        grid-area: license;
       }
 
       @media (768px <= width) {
         body {
           font-size: 16px;
+          grid-template:
+            "clock" 500px
+            "digital" 40px
+            "license" 25px
+            / 1fr;
         }
         #clock-de-terra {
-          top: 10px;
-          left: 10px;
           width: 500px;
           height: 500px;
         }
@@ -69,9 +82,6 @@
         #hands {
           width: 500px;
           height: 500px;
-        }
-        #digital-clock {
-          margin-left: 50px;
         }
       }
     </style>
@@ -162,8 +172,7 @@
             500 + 240 * -Math.sin((timezone + utcZonedNow.hour + utcZonedNow.minute / 60) * twentyFourthTurn - fourthTurn)
           );
         }
-        digitalClockElm.textContent = `${utcZonedNow.toString({smallestUnit: 'minute'})} 週 ${utcZonedNow.dayOfWeek}\n`;
-        digitalClockElm.textContent += `${localZonedNow.toString({smallestUnit: 'minute'})} 週 ${localZonedNow.dayOfWeek}`;
+        digitalClockElm.textContent = `${utcZonedNow.toString({smallestUnit: 'minute'})} 週 ${utcZonedNow.dayOfWeek}\n${localZonedNow.toString({smallestUnit: 'minute'})} 週 ${localZonedNow.dayOfWeek}`;
       };
 
       update();
@@ -176,5 +185,6 @@
       <canvas id="hands" width="1000" height="1000"></canvas>
     </div>
     <div id="digital-clock"></div>
+    <div id="license-info">Created by Jhonatan Kelvin. Licensed under the ISC License.</div>
   </body>
 </html>
